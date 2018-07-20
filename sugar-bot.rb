@@ -10,8 +10,7 @@ googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
-    puts command
-    unless command[0] != '!' && command == "!fm" || command == "!yt" || command =="!plasticlove" || command == "!help"
+    unless command[0] != '!' || command == "!fm" || command == "!yt" || command =="!plasticlove" || command == "!help"
         event.respond "Unknown command. Please see \"!help\" for a list of available commands"
     end
 end
