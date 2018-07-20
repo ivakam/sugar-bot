@@ -47,7 +47,7 @@ bot.command :fm do |event|
 			Marshal.dump(@userList, f)
 		end
 		"Last.fm user " + argArr[2] + " set for Discord user " + event.user.name + "!"
-    elsif @userList != nil && @userList.has_value?(event.user.name)
+    elsif @userList != nil && @userList[event.user.name] != nil
         case subCommand
         when nil
             currentTrack = JSON.parse(
@@ -65,11 +65,30 @@ bot.command :fm do |event|
             )
             albumCover = currentTrack['recenttracks']['track'][0]['image'][3]['#text']
             event.channel.send_embed do |embed|
-                embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: albumCover)
                 embed.colour = '4286f4'
-                embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'))
-                embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'))
-                embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'))
+                if albumCover != ''
+                    embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: albumCover)
+                else
+                    embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: 'https://i.imgur.com/EJ9UpgY.jpg')
+                end
+                
+                if extractTrackInfo(currentTrack, 'name') != ''
+                    embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'))
+                else
+                    embed.add_field(name: 'Title: ', value: '')
+                end
+                
+                if extractTrackInfo(currentTrack, 'artist') != ''
+                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'))
+                else
+                    embed.add_field(name: 'Artist: ', value: '')
+                end
+                
+                if extractTrackInfo(currentTrack, 'album') != ''
+                    embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'))
+                else
+                    embed.add_field(name: 'Artist: ', value: '')
+                end
             end
         end
     else

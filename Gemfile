@@ -11,5 +11,3 @@ gem 'rest-client'
 gem 'json'
 # Titleize strings
 gem 'titleize'
-# Google API services
-gem 'google-api-client', '~> 0.8.2', :require => 'google/api_client'
