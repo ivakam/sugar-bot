@@ -10,8 +10,11 @@ googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
-    unless command[0] != '!' || command == "!fm" || command == "!yt" || command =="!plasticlove" || command == "!help"
-        event.respond "Unknown command. Please see \"!help\" for a list of available commands"
+    commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper"]
+    if command[0] == '!'
+        unless commandList.include?(command)
+            event.respond "Unknown command. Please see \"!help\" for a list of available commands"
+        end
     end
 end
 
@@ -26,7 +29,11 @@ bot.command :help do |event|
 end
 
 bot.command :plasticlove do |event|
-  event.respond 'https://i.kym-cdn.com/entries/icons/original/000/019/785/stopit.png'
+    event.respond 'https://i.kym-cdn.com/entries/icons/original/000/019/785/stopit.png'
+end
+
+bot.command :flapper do |event|
+    event.respond 'https://i.kym-cdn.com/entries/icons/facebook/000/013/306/2dd.jpg'
 end
 
 bot.command :fm do |event|
@@ -75,19 +82,19 @@ bot.command :fm do |event|
                 if extractTrackInfo(currentTrack, 'name') != ''
                     embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'))
                 else
-                    embed.add_field(name: 'Title: ', value: '')
+                    embed.add_field(name: 'Title: ', value: '*Unknown title*')
                 end
                 
                 if extractTrackInfo(currentTrack, 'artist') != ''
                     embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'))
                 else
-                    embed.add_field(name: 'Artist: ', value: '')
+                    embed.add_field(name: 'Artist: ', value: '*Unknown artist*')
                 end
                 
                 if extractTrackInfo(currentTrack, 'album') != ''
                     embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'))
                 else
-                    embed.add_field(name: 'Artist: ', value: '')
+                    embed.add_field(name: 'Artist: ', value: '*Unknown album*')
                 end
             end
         end
@@ -98,20 +105,26 @@ end
 
 bot.command :yt do |event|
     argArr = event.message.content.split(/^\w+\s+/)
-    searchResult = JSON.parse(
-        RestClient.get 'https://www.googleapis.com/youtube/v3/search',
-        {
-            params:
+    query = argArr[0]
+    puts query
+    if query != "!yt"
+        searchResult = JSON.parse(
+            RestClient.get 'https://www.googleapis.com/youtube/v3/search',
             {
-                part: 'snippet',
-                maxResults: 1,
-                q: argArr[0],
-                type: 'video',
-                key: googleAPIkey
+                params:
+                {
+                    part: 'snippet',
+                    maxResults: 1,
+                    q: argArr[0],
+                    type: 'video',
+                    key: googleAPIkey
+                }
             }
-        }
-    )
-    event.respond("https://youtube.com/watch/" + searchResult['items'][0]['id']['videoId'])
+        )
+        event.respond("https://youtube.com/watch/" + searchResult['items'][0]['id']['videoId'])
+    else
+        event.respond("Enter a search term to search.")
+    end
 end
 
 #Helper for traversing track info
