@@ -94,7 +94,7 @@ bot.command :fm do |event|
                 if extractTrackInfo(currentTrack, 'album') != ''
                     embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'))
                 else
-                    embed.add_field(name: 'Artist: ', value: '*Unknown album*')
+                    embed.add_field(name: 'Album: ', value: '*Unknown album*')
                 end
             end
         end
