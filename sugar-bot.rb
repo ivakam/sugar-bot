@@ -33,7 +33,7 @@ bot.command :plasticlove do |event|
 end
 
 bot.command :flapper do |event|
-    event.respond 'https://i.kym-cdn.com/entries/icons/facebook/000/013/306/2dd.jpg'
+    event.respond 'https://cdn.discordapp.com/emojis/393439670475685888.png?v=1'
 end
 
 bot.command :fm do |event|
@@ -73,29 +73,35 @@ bot.command :fm do |event|
             albumCover = currentTrack['recenttracks']['track'][0]['image'][3]['#text']
             event.channel.send_embed do |embed|
                 embed.colour = '4286f4'
+                embed.url = 'http://www.last.fm/user/' + @userList[event.user.name]
+                embed.title = event.user.name + '\'s last.fm profile'
+                embed.description = 'Currently scrobbling:'
                 if albumCover != ''
                     embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: albumCover)
                 else
                     embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: 'https://i.imgur.com/EJ9UpgY.jpg')
                 end
-                
+
                 if extractTrackInfo(currentTrack, 'name') != ''
-                    embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'))
+                    embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'), inline: true)
                 else
-                    embed.add_field(name: 'Title: ', value: '*Unknown title*')
+                    embed.add_field(name: 'Title: ', value: '*Unknown title*', inline: true)
                 end
                 
                 if extractTrackInfo(currentTrack, 'artist') != ''
-                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'))
+                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'), inline: true)
                 else
-                    embed.add_field(name: 'Artist: ', value: '*Unknown artist*')
+                    embed.add_field(name: 'Artist: ', value: '*Unknown artist*', inline: true)
                 end
                 
                 if extractTrackInfo(currentTrack, 'album') != ''
-                    embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'))
+                    embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'), inline: true)
                 else
-                    embed.add_field(name: 'Album: ', value: '*Unknown album*')
+                    embed.add_field(name: 'Album: ', value: '*Unknown album*', inline: true)
                 end
+                
+                embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
+                embed.timestamp = Time.now
             end
         end
     else
