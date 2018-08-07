@@ -3,8 +3,10 @@ require 'rest-client'
 require 'json'
 require 'titleize'
 
-discordKey = File.read('discord_api_key.txt')
-fmAPIkey = File.read('fm_api_key.txt')
+discordKeyFile = File.read('discord_api_key.json')
+fmKeyFile = File.read('fm_api_key.json')
+discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
+fmKeyFile =JSON.parse(fmKeyFile)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
