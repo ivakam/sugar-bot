@@ -3,10 +3,12 @@ require 'rest-client'
 require 'json'
 require 'titleize'
 
-bot = Discordrb::Commands::CommandBot.new token: 'NDY5MjkzMTcxMzk5MTk2NzAy.DjIH5w.v4l7T1MaCxbnmVJlJUO5tJmYpJo', prefix: '!'
-fmAPIkey = 'cb7be8fb2f185dbb396dcd1b8c28b32d'
+discordKey = File.read('discord_api_key.txt')
+fmAPIkey = File.read('fm_api_key.txt')
+userAgent = File.read('user_agent.txt')
+bot = Discordrb::Commands::CommandBot.new token: discordKey, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
-#RestClient.get 'http://localhost', :user_agent => "PorousBoat"
+RestClient.get 'http://localhost', :user_agent => userAgent
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
