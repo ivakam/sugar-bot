@@ -8,7 +8,7 @@ fmKeyFile = File.read('fm_api_key.json')
 discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
 fmKeyFile =JSON.parse(fmKeyFile)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
-bot = Discordrb::Commands::CommandBot.new token: discordKey, prefix: '!'
+bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
 #RestClient.get 'http://localhost', :user_agent => userAgent
 
