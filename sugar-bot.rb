@@ -5,10 +5,10 @@ require 'titleize'
 
 discordKey = File.read('discord_api_key.txt')
 fmAPIkey = File.read('fm_api_key.txt')
-userAgent = File.read('user_agent.txt')
+#userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
-RestClient.get 'http://localhost', :user_agent => userAgent
+#RestClient.get 'http://localhost', :user_agent => userAgent
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
