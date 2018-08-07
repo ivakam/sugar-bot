@@ -6,7 +6,7 @@ require 'titleize'
 discordKeyFile = File.read('discord_api_key.json')
 fmKeyFile = File.read('fm_api_key.json')
 discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
-fmKeyFile =JSON.parse(fmKeyFile)["fmAPIKey"]
+fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
@@ -69,7 +69,7 @@ bot.command :fm do |event|
                         method: 'user.getrecenttracks',
                         user: @userList[event.user.name],
                         limit: 1,
-                        api_key: fmAPIkey,
+                        api_key: fmKey,
                         format: 'json'
                     }
                 }
