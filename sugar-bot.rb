@@ -116,7 +116,6 @@ end
 bot.command :yt do |event|
     argArr = event.message.content.split(/^\w+\s+/)
     query = argArr[0]
-    puts query
     if query != "!yt"
         searchResult = JSON.parse(
             RestClient.get 'https://www.googleapis.com/youtube/v3/search',
