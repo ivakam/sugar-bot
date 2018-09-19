@@ -16,7 +16,7 @@ bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
     commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper"]
     if command[0] == '!'
-        unless commandList.include?(command) || command =~ /!{2,}|!(?!.)/
+        unless commandList.include?(command) || command =~ /!\W+/
             event.respond "Unknown command. Please see \"!help\" for a list of available commands"
         end
     end
