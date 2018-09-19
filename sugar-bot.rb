@@ -16,7 +16,7 @@ bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
     commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper"]
     if command[0] == '!'
-        unless commandList.include?(command)
+        unless commandList.include?(command) || command =~ /!{2,}|!(?!.)/
             event.respond "Unknown command. Please see \"!help\" for a list of available commands"
         end
     end
@@ -73,7 +73,7 @@ bot.command :fm do |event|
                         format: 'json'
                     }
                 }
-            )
+                )
             albumCover = currentTrack['recenttracks']['track'][0]['image'][3]['#text']
             event.channel.send_embed do |embed|
                 embed.colour = '4286f4'
@@ -86,22 +86,35 @@ bot.command :fm do |event|
                     embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: 'https://i.imgur.com/EJ9UpgY.jpg')
                 end
 
-                if extractTrackInfo(currentTrack, 'name') != ''
-                    embed.add_field(name: 'Title: ', value: extractTrackInfo(currentTrack, 'name'), inline: true)
+                if extractTrackInfo(track: currentTrack, info: 'name') != ''
+                    embed.add_field(name: 'Title: ', value: extractTrackInfo(track: currentTrack, info: 'name'), inline: true)
                 else
                     embed.add_field(name: 'Title: ', value: '*Unknown title*', inline: true)
                 end
                 
-                if extractTrackInfo(currentTrack, 'artist') != ''
-                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(currentTrack, 'artist'), inline: true)
+                if extractTrackInfo(track: currentTrack, info: 'artist') != ''
+                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(track: currentTrack, info: 'artist'), inline: true)
                 else
                     embed.add_field(name: 'Artist: ', value: '*Unknown artist*', inline: true)
                 end
                 
-                if extractTrackInfo(currentTrack, 'album') != ''
-                    embed.add_field(name: 'Album: ', value: extractTrackInfo(currentTrack, 'album'), inline: true)
+                if extractTrackInfo(track: currentTrack, info: 'album') != ''
+                    embed.add_field(name: 'Album: ', value: extractTrackInfo(track: currentTrack, info: 'album') + "
+                    ----------")
                 else
-                    embed.add_field(name: 'Album: ', value: '*Unknown album*', inline: true)
+                    embed.add_field(name: 'Album: ', value: '*Unknown album*')
+                end
+                
+                if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
+                    embed.add_field(name: 'Previous track: ', value: extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1), inline: true)
+                else
+                    embed.add_field(name: 'Previous track: ', value: '*No previous track*', inline: true)
+                end
+                
+                if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
+                    embed.add_field(name: 'Album & Artist: ', value: extractTrackInfo(track: currentTrack, info: 'album', trackNr: 1) + " by *" + extractTrackInfo(track: currentTrack, info: 'artist', trackNr: 1) + "*", inline: true)
+                else
+                    embed.add_field(name: 'Album & Artist: ', value: '*Could not find album/artist*', inline: true)
                 end
                 
                 embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
@@ -138,8 +151,8 @@ end
 
 #Helper for traversing track info
 
-def extractTrackInfo(track, info)
-    processedInfo = track['recenttracks']['track'][0][info]
+def extractTrackInfo(track: nil, info: "", trackNr: 0)
+    processedInfo = track['recenttracks']['track'][trackNr][info]
     if processedInfo['#text'] != nil
         processedInfo = processedInfo['#text']
     end
