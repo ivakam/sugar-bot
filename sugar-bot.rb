@@ -14,7 +14,7 @@ googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
-    commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper"]
+    commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper", "!toomuchsun"]
     if command[0] == '!'
         unless commandList.include?(command) || command =~ /!\W+/ || command [1] == nil
             event.respond "Unknown command. Please see \"!help\" for a list of available commands"
