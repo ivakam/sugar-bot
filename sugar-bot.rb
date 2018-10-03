@@ -33,7 +33,11 @@ bot.command :help do |event|
 end
 
 bot.command :plasticlove do |event|
-    event.respond 'https://i.kym-cdn.com/entries/icons/original/000/019/785/stopit.png'
+    event.respond 'https://media.discordapp.net/attachments/466025449026224131/497126548999110677/Untitled-1.png'
+end
+
+bot.command :toomuchsun do |event|
+    event.respond 'https://cdn.discordapp.com/attachments/466025449026224131/493170372372332545/To.png'
 end
 
 bot.command :flapper do |event|
