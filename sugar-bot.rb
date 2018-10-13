@@ -28,6 +28,7 @@ bot.command :help do |event|
         embed.title = "Preface all commands with \"!\""
         embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: 'https://i.imgur.com/ceYNiDi.png')
         embed.colour = 'd3d3d3'
+        embed.add_field(name: 'varieti.es', value: "!va <album title> displays first search result on the archive.")
         embed.add_field(name: 'Last.fm: ', value: "!fm displays currently scrobbling track.")
         embed.add_field(name: 'Youtube: ', value: "!yt <search terms> displays first search result on Youtube.")
     end
