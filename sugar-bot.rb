@@ -47,35 +47,39 @@ bot.command :flapper do |event|
 end
 
 bot.command :va do |event|
-    event.channel.send_embed do |embed|
-        titleQ = event.message.content.gsub(/^!va\s+/, "")
-        begin
-            rawAlbum = RestClient.get("http://varieti.es/albums/fetch/?title=#{titleQ}")
-            album = JSON.parse(rawAlbum)[0]
-        rescue Exception => e
-            p e
-            event.respond "Could not access varieti.es API. Please ping my owner and tell him he's a lazy bum!"
-            return
+    titleQ = event.message.content.gsub(/^!va\s+/, "")
+    begin
+        rawAlbum = RestClient.get("http://varieti.es/albums/fetch/?title=#{titleQ}")
+        album = JSON.parse(rawAlbum)[0]
+    rescue Exception => e
+        p e
+        event.respond "Could not access varieti.es API. Please ping my owner and tell him he's a lazy bum!"
+        return
+    end
+    if album != "Out of albums to render!"
+        event.channel.send_embed do |embed|
+            title = if album["title"] != "" then album["title"] else '*Unknown title*' end
+            artist = if album["romaji_artist"] != "" then album["romaji_artist"] else '*Unknown artist*' end
+            year = if album["year"] != "" then album["year"] else '*Unknown year*' end
+            flavor = if album["flavor"] != "" then album["flavor"] else '*Unknown flavor*' end
+            description = if album["description"] != "" then album["description"] else '*Unknown description*' end
+            thumbnail = if album["thumbnail"] != "" then album["thumbnail"] else 'https://i.imgur.com/EJ9UpgY.jpg' end
+            embed.colour = '005cc5'
+            embed.url = 'http://varieti.es'
+            embed.title = "varieti.es"
+            embed.description = "Search result for \"#{titleQ}\""
+            embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: thumbnail)
+            embed.add_field(name: 'Title: ', value: title, inline: true)
+            embed.add_field(name: 'Artist: ', value: artist, inline: true)
+            embed.add_field(name: 'Year: ', value: year + "
+            ----------", inline: true)
+            embed.add_field(name: 'Flavor: ', value: flavor, inline: true)
+            embed.add_field(name: 'Description: ', value: description)
+            embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
+            embed.timestamp = Time.now
         end
-        title = if album["title"] != "" then album["title"] else '*Unknown title*' end
-        artist = if album["romaji_artist"] != "" then album["romaji_artist"] else '*Unknown artist*' end
-        year = if album["year"] != "" then album["year"] else '*Unknown year*' end
-        flavor = if album["flavor"] != "" then album["flavor"] else '*Unknown flavor*' end
-        description = if album["description"] != "" then album["description"] else '*Unknown description*' end
-        thumbnail = if album["thumbnail"] != "" then album["thumbnail"] else 'https://i.imgur.com/EJ9UpgY.jpg' end
-        embed.colour = '005cc5'
-        embed.url = 'http://varieti.es'
-        embed.title = "varieti.es"
-        embed.description = "Search result for \"#{titleQ}\""
-        embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: thumbnail)
-        embed.add_field(name: 'Title: ', value: title, inline: true)
-        embed.add_field(name: 'Artist: ', value: artist, inline: true)
-        embed.add_field(name: 'Year: ', value: year + "
-        ----------", inline: true)
-        embed.add_field(name: 'Flavor: ', value: flavor, inline: true)
-        embed.add_field(name: 'Description: ', value: description)
-        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
-        embed.timestamp = Time.now
+    else
+        event.respond "No results for \"#{titleQ}\""
     end
 end
 
