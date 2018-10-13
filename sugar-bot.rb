@@ -5,9 +5,9 @@ require 'titleize'
 require 'net/http'
 
 discordKeyFile = File.read('discord_api_key.json')
-#fmKeyFile = File.read('fm_api_key.json')
+fmKeyFile = File.read('fm_api_key.json')
 discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
-#fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
+fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
@@ -52,7 +52,6 @@ bot.command :va do |event|
         begin
             rawAlbum = RestClient.get("http://varieti.es/albums/fetch/?title=#{titleQ}")
             album = JSON.parse(rawAlbum)[0]
-            p "Success!"
         rescue Exception => e
             p e
             event.respond "Could not access varieti.es API. Please ping my owner and tell him he's a lazy bum!"
