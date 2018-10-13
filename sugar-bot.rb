@@ -2,11 +2,12 @@ require 'discordrb'
 require 'rest-client'
 require 'json'
 require 'titleize'
+require 'net/http'
 
 discordKeyFile = File.read('discord_api_key.json')
-fmKeyFile = File.read('fm_api_key.json')
+#fmKeyFile = File.read('fm_api_key.json')
 discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
-fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
+#fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
@@ -14,7 +15,7 @@ googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
 
 bot.message do |event|
     command = event.message.content.split(/\s+/)[0]
-    commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper", "!toomuchsun"]
+    commandList = ["!fm", "!yt", "!plasticlove", "!help", "!flapper", "!toomuchsun", "!va"]
     if command[0] == '!'
         unless commandList.include?(command) || command =~ /!\W+/ || command [1] == nil
             event.respond "Unknown command. Please see \"!help\" for a list of available commands"
@@ -42,6 +43,40 @@ end
 
 bot.command :flapper do |event|
     event.respond 'https://cdn.discordapp.com/emojis/393439670475685888.png?v=1'
+end
+
+bot.command :va do |event|
+    event.channel.send_embed do |embed|
+        titleQ = event.message.content.gsub(/^!va\s+/, "")
+        begin
+            rawAlbum = RestClient.get("http://varieti.es/albums/fetch/?title=#{titleQ}")
+            album = JSON.parse(rawAlbum)[0]
+            p "Success!"
+        rescue Exception => e
+            p e
+            event.respond "Could not access varieti.es API. Please ping my owner and tell him he's a lazy bum!"
+            return
+        end
+        title = if album["title"] != "" then album["title"] else '*Unknown title*' end
+        artist = if album["romaji_artist"] != "" then album["romaji_artist"] else '*Unknown artist*' end
+        year = if album["year"] != "" then album["year"] else '*Unknown year*' end
+        flavor = if album["flavor"] != "" then album["flavor"] else '*Unknown flavor*' end
+        description = if album["description"] != "" then album["description"] else '*Unknown description*' end
+        thumbnail = if album["thumbnail"] != "" then album["thumbnail"] else 'https://i.imgur.com/EJ9UpgY.jpg' end
+        embed.colour = '005cc5'
+        embed.url = 'http://varieti.es'
+        embed.title = "varieti.es"
+        embed.description = "Search result for \"#{titleQ}\""
+        embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: thumbnail)
+        embed.add_field(name: 'Title: ', value: title, inline: true)
+        embed.add_field(name: 'Artist: ', value: artist, inline: true)
+        embed.add_field(name: 'Year: ', value: year + "
+        ----------", inline: true)
+        embed.add_field(name: 'Flavor: ', value: flavor, inline: true)
+        embed.add_field(name: 'Description: ', value: description)
+        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
+        embed.timestamp = Time.now
+    end
 end
 
 bot.command :fm do |event|
