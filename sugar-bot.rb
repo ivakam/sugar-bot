@@ -4,10 +4,9 @@ require 'json'
 require 'titleize'
 require 'net/http'
 
-discordKeyFile = File.read('discord_api_key.json')
-fmKeyFile = File.read('fm_api_key.json')
-discordKey = JSON.parse(discordKeyFile)["discordAPIKey"]
-fmKey =JSON.parse(fmKeyFile)["fmAPIKey"]
+secrets = File.read('secrets.json')
+discordKey = JSON.parse(secrets)["discordAPIKey"]
+fmKey =JSON.parse(secrets)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
