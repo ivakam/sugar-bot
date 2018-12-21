@@ -194,7 +194,7 @@ def extractTrackInfo(track: nil, info: "", trackNr: 0)
         processedInfo.titleize
         return processedInfo
     end
-    if processedInfo.empty?
+    if processedInfo.empty? || processedInfo == ''
         return "*Unknown #{info}*"
     end
     return processedInfo
