@@ -127,36 +127,25 @@ bot.command :fm do |event|
                 else
                     embed.thumbnail = Discordrb::Webhooks::EmbedImage.new(url: 'https://i.imgur.com/EJ9UpgY.jpg')
                 end
-
-                if extractTrackInfo(track: currentTrack, info: 'name') != ''
-                    embed.add_field(name: 'Title: ', value: extractTrackInfo(track: currentTrack, info: 'name'), inline: true)
-                else
-                    embed.add_field(name: 'Title: ', value: '*Unknown title*', inline: true)
-                end
                 
-                if extractTrackInfo(track: currentTrack, info: 'artist') != ''
-                    embed.add_field(name: 'Artist: ', value: extractTrackInfo(track: currentTrack, info: 'artist'), inline: true)
-                else
-                    embed.add_field(name: 'Artist: ', value: '*Unknown artist*', inline: true)
-                end
-                
-                if extractTrackInfo(track: currentTrack, info: 'album') != ''
-                    embed.add_field(name: 'Album: ', value: extractTrackInfo(track: currentTrack, info: 'album') + "
+                embed.add_field(name: 'Title: ', value: extractTrackInfo(track: currentTrack, info: 'name'), inline: true)
+                embed.add_field(name: 'Artist: ', value: extractTrackInfo(track: currentTrack, info: 'artist'), inline: true)
+                embed.add_field(name: 'Album: ', value: extractTrackInfo(track: currentTrack, info: 'album') + "
                     ----------")
+                if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1)
+                    if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
+                        embed.add_field(name: 'Previous track: ', value: extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1), inline: true)
+                    else
+                        embed.add_field(name: 'Previous track: ', value: '*No previous track*', inline: true)
+                    end
+                    
+                    if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
+                        embed.add_field(name: 'Album & Artist: ', value: extractTrackInfo(track: currentTrack, info: 'album', trackNr: 1) + " by *" + extractTrackInfo(track: currentTrack, info: 'artist', trackNr: 1) + "*", inline: true)
+                    else
+                        embed.add_field(name: 'Album & Artist: ', value: '*Could not find album/artist*', inline: true)
+                    end
                 else
-                    embed.add_field(name: 'Album: ', value: '*Unknown album*')
-                end
-                
-                if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
-                    embed.add_field(name: 'Previous track: ', value: extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1), inline: true)
-                else
-                    embed.add_field(name: 'Previous track: ', value: '*No previous track*', inline: true)
-                end
-                
-                if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
-                    embed.add_field(name: 'Album & Artist: ', value: extractTrackInfo(track: currentTrack, info: 'album', trackNr: 1) + " by *" + extractTrackInfo(track: currentTrack, info: 'artist', trackNr: 1) + "*", inline: true)
-                else
-                    embed.add_field(name: 'Album & Artist: ', value: '*Could not find album/artist*', inline: true)
+                    embed.add_field(name: 'Previous Track:', value: 'Could not fetch previous track!')
                 end
                 
                 embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Sugar Bot by PorousBoat')
@@ -194,11 +183,20 @@ end
 #Helper for traversing track info
 
 def extractTrackInfo(track: nil, info: "", trackNr: 0)
-    processedInfo = track['recenttracks']['track'][trackNr][info]
+    begin
+        processedInfo = track['recenttracks']['track'][trackNr][info]
+    rescue Exception => e
+        p e
+        return nil
+    end
     if processedInfo['#text'] != nil
         processedInfo = processedInfo['#text']
+        processedInfo.titleize
+        return processedInfo
     end
-    processedInfo.titleize
+    if processedInfo.empty?
+        return "*Unknown #{info}*"
+    end
     return processedInfo
 end
 
