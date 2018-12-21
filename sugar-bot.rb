@@ -133,17 +133,8 @@ bot.command :fm do |event|
                 embed.add_field(name: 'Album: ', value: extractTrackInfo(track: currentTrack, info: 'album') + "
                     ----------")
                 if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1)
-                    if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
-                        embed.add_field(name: 'Previous track: ', value: extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1), inline: true)
-                    else
-                        embed.add_field(name: 'Previous track: ', value: '*No previous track*', inline: true)
-                    end
-                    
-                    if extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1) != ''
-                        embed.add_field(name: 'Album & Artist: ', value: extractTrackInfo(track: currentTrack, info: 'album', trackNr: 1) + " by *" + extractTrackInfo(track: currentTrack, info: 'artist', trackNr: 1) + "*", inline: true)
-                    else
-                        embed.add_field(name: 'Album & Artist: ', value: '*Could not find album/artist*', inline: true)
-                    end
+                    embed.add_field(name: 'Previous track: ', value: extractTrackInfo(track: currentTrack, info: 'name', trackNr: 1), inline: true)
+                    embed.add_field(name: 'Album & Artist: ', value: extractTrackInfo(track: currentTrack, info: 'album', trackNr: 1) + " by *" + extractTrackInfo(track: currentTrack, info: 'artist', trackNr: 1) + "*", inline: true)
                 else
                     embed.add_field(name: 'Previous Track:', value: 'Could not fetch previous track!')
                 end
@@ -192,7 +183,6 @@ def extractTrackInfo(track: nil, info: "", trackNr: 0)
     if processedInfo['#text'] != nil
         processedInfo = processedInfo['#text']
         processedInfo.titleize
-        return processedInfo
     end
     if processedInfo.empty? || processedInfo == ''
         return "*Unknown #{info}*"
