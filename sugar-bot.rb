@@ -3,10 +3,11 @@ require 'rest-client'
 require 'json'
 require 'titleize'
 require 'net/http'
+require 'addressable/uri'
 
 secrets = File.read('secrets.json')
 discordKey = JSON.parse(secrets)["discordAPIKey"]
-fmKey =JSON.parse(secrets)["fmAPIKey"]
+fmKey = JSON.parse(secrets)["fmAPIKey"]
 #userAgent = File.read('user_agent.txt')
 bot = Discordrb::Commands::CommandBot.new token: discordKey, client_id: 469293171399196702, prefix: '!'
 googleAPIkey = 'AIzaSyDtC4ustRkZdE_C7ppOi3pUTh9hHnQSXGg'
@@ -48,7 +49,7 @@ end
 bot.command :va do |event|
     titleQ = event.message.content.gsub(/^!va\s+/, "")
     begin
-        rawAlbum = RestClient.get("http://varieti.es/albums/fetch/?title=#{titleQ}")
+        rawAlbum = RestClient.get(Addressable::URI.parse("http://varieti.es/albums/fetch/?title=#{titleQ}").normalize.to_str)
         album = JSON.parse(rawAlbum)[0]
     rescue Exception => e
         p e
